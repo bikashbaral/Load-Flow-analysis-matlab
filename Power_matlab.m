@@ -160,6 +160,7 @@ while 1
 		end
 	end
     correction = b*mismatch;
+    % correction = jacobian\mismatch;
     for i = 1:size(bus_pq)(1) + size(bus_pv)(1)
 	bus_dat(i, 4) += correction(i);
     end
