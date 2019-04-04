@@ -21,3 +21,14 @@ end
 
 
 line_dat = input("Enter line data ");
+Y_bus = zeros(nbs, nbs);
+size(Y_bus)
+% disp(Y_bus)
+for i = 1:size(line_dat)(1)
+    Y_bus(line_dat(i, 1), line_dat(i, 2)) -= (1.0/(line_dat(i, 3) + j*line_dat(i, 4)))/line_dat(i, 6);
+    Y_bus(line_dat(i, 2), line_dat(i, 1)) -= (1.0/(line_dat(i, 3) + j*line_dat(i, 4)))/line_dat(i, 6);
+    Y_bus(line_dat(i, 1), line_dat(i, 1)) += (1.0/(line_dat(i, 3) + j*line_dat(i, 4)))/(line_dat(i, 6)^2) + j*line_dat(i, 5)/2;%from bus is divided by (a*a)
+    Y_bus(line_dat(i, 2), line_dat(i, 2)) += 1.0/(line_dat(i, 3) + j*line_dat(i, 4)) + j*line_dat(i, 5)/2;
+end
+
+
