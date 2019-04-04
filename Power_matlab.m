@@ -23,7 +23,7 @@ end
 line_dat = input("Enter line data ");
 Y_bus = zeros(nbs, nbs);
 size(Y_bus)
-% disp(Y_bus)
+disp(size(line_dat)(1))
 for i = 1:size(line_dat)(1)
     Y_bus(line_dat(i, 1), line_dat(i, 2)) -= (1.0/(line_dat(i, 3) + j*line_dat(i, 4)))/line_dat(i, 6);
     Y_bus(line_dat(i, 2), line_dat(i, 1)) -= (1.0/(line_dat(i, 3) + j*line_dat(i, 4)))/line_dat(i, 6);
@@ -31,4 +31,41 @@ for i = 1:size(line_dat)(1)
     Y_bus(line_dat(i, 2), line_dat(i, 2)) += 1.0/(line_dat(i, 3) + j*line_dat(i, 4)) + j*line_dat(i, 5)/2;
 end
 
-
+iter = 0
+while 1
+	iter += 1;
+	bus_pq = bus_dat(bus_dat(:, 2) == 101, :);
+	bus_pv = bus_dat(bus_dat(:, 2) == 102, :);
+	bus_sl = bus_dat(bus_dat(:, 2) == 103, :);
+	bus_dat = [bus_pq; bus_pv; bus_sl];
+	% disp(bus_pq)  %tp check the values once 
+    mismatch = zeros(2*nbs - nmc - 1, 1);
+    %Computing mismatch of P for PQ bus
+    for i = 1:size(bus_pq)(1)
+        n = bus_pq(i, 1);
+        mismatch(i) = bus_dat(n, 5) - bus_dat(n, 7);	%Pspecific
+        for j = 1:size(bus_dat)(1)	%to calculate the Pcal we will have to use the value of accross all nodes/buses
+            m = bus_dat(j, 1);
+            mismatch(i) -= abs(bus_dat(n, 3))*abs(bus_dat(m, 3))*abs(Y_bus(n, m))*cos(bus_dat(n, 4) - bus_dat(m, 4) - angle(Y_bus(n, m)));
+        end
+    end
+    %Computing mismatch of P for PV bus
+    for i = 1:size(bus_pv)(1)
+        n = bus_pv(i, 1);
+        index = size(bus_pq)(1) + i;
+        mismatch(index) = bus_dat(n, 5) - bus_dat(n, 7);
+        for j = 1:size(bus_dat)(1)
+            m = bus_dat(j, 1);
+            mismatch(index) -= abs(bus_dat(n, 3))*abs(bus_dat(m, 3))*abs(Y_bus(n, m))*cos(bus_dat(n, 4) - bus_dat(m, 4) - angle(Y_bus(n, m)));
+        end
+    end
+    % Computing mismatch of Q for PQ bus
+    for i = 1:size(bus_pq)(1)
+        n = bus_pq(i, 1);
+        index = size(bus_pq)(1) + size(bus_pv)(1) + i;
+        mismatch(index) = bus_dat(n, 6) - bus_dat(n, 8);
+        for j = 1:size(bus_dat)(1)
+            m = bus_dat(j, 1);
+            mismatch(index) -= abs(bus_dat(n, 3))*abs(bus_dat(m, 3))*abs(Y_bus(n, m))*sin(bus_dat(n, 4) - bus_dat(m, 4) - angle(Y_bus(n, m)));
+        end
+    end
