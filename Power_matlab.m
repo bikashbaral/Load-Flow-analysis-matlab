@@ -1,8 +1,8 @@
 % Test Case
-4
-2
-[1 101 1 0 0 0 2.2 1.35; 2 101 1 0 0 0 2 1.25; 3 102 1.02 0 3.18 0 0.8 0.5; 4 103 1 0 0 0 0 0]
-[1 4 0.01 0.08 0.1 1; 1 3 0.005 0.05 0.15 1; 2 3 0.01 0.06 0.12 1; 2 4 0.005 0.04 0.08 1; 3 4 0.01 0.1 0.1 1]
+% 4
+% 2
+% [1 101 1 0 0 0 2.2 1.35; 2 101 1 0 0 0 2 1.25; 3 102 1.02 0 3.18 0 0.8 0.5; 4 103 1 0 0 0 0 0]
+% [1 4 0.01 0.08 0.1 1; 1 3 0.005 0.05 0.15 1; 2 3 0.01 0.06 0.12 1; 2 4 0.005 0.04 0.08 1; 3 4 0.01 0.1 0.1 1]
 
 % Test Case 2
 6
@@ -127,3 +127,27 @@ while 1
         end
     end
     
+    correction = jacobian\mismatch;
+    for i = 1:size(bus_pq)(1) + size(bus_pv)(1)
+    	c = correction(i)*bus_dat(i, 4)
+        bus_dat(i, 4) += c;
+    end
+    
+    for i = 1:size(bus_pq)(1)
+        offset = size(bus_pq)(1) + size(bus_pv)(1);
+        bus_dat(i, 3) += correction(offset + i)*bus_dat(i, 3);
+    end
+    
+    disp("Iteration ")
+    disp(iter)
+    mismatch
+    if(mismatch < 1e-4)
+        break
+    end
+end
+
+for i = 1:nbs
+    bus_dat(i, 4) *= 180.0/pi;
+end
+
+bus_dat
