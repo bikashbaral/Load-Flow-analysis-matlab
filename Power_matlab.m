@@ -38,7 +38,7 @@ while 1
 	bus_pv = bus_dat(bus_dat(:, 2) == 102, :);
 	bus_sl = bus_dat(bus_dat(:, 2) == 103, :);
 	bus_dat = [bus_pq; bus_pv; bus_sl];
-	% disp(bus_pq)  %tp check the values once 
+	% disp(bus_pq)  %to check the values once 
     mismatch = zeros(2*nbs - nmc - 1, 1);
     %Computing mismatch of P for PQ bus
     for i = 1:size(bus_pq)(1)
@@ -69,3 +69,61 @@ while 1
             mismatch(index) -= abs(bus_dat(n, 3))*abs(bus_dat(m, 3))*abs(Y_bus(n, m))*sin(bus_dat(n, 4) - bus_dat(m, 4) - angle(Y_bus(n, m)));
         end
     end
+    
+    jacobian = zeros(2*nbs - nmc - 1);
+    %Computing Del(P)/Del(thetha) which is of size (nbs-1)x(nbs-1) or size(bus_pq)(1) + size(bus_pv)(1)	
+    for i = 1:size(bus_pq)(1) + size(bus_pv)(1)	
+        for j = 1:size(bus_pq)(1) + size(bus_pv)(1)
+            if i != j
+                jacobian(i, j) = abs(bus_dat(i, 3))*abs(bus_dat(j, 3))*abs(Y_bus(i, j))*sin(bus_dat(i, 4) - bus_dat(j, 4) - angle(Y_bus(i, j)));	%|Vi|*|Vj|*|Yij|*sin()
+            else
+                jacobian(i, j) = -1*bus_dat(i, 3)*bus_dat(i, 3)*imag(Y_bus(i, i));	%-|v|^2*Bii
+                for k = 1:nbs
+                    jacobian(i, j) -= abs(bus_dat(i, 3))*abs(bus_dat(k, 3))*abs(Y_bus(i, k))*sin(bus_dat(i, 4) - bus_dat(k, 4) - angle(Y_bus(i, k)));	%-Qi
+                end
+            end
+        end
+    end
+    %Computing Del(Q)/Del(V) which is of size (nbs-nmc)x(nbs-nmc) or size(bus_pq)(1)
+    for i = 1:size(bus_pq)(1)
+        for j = 1:size(bus_pq)(1)
+            offset = size(bus_pq)(1) + size(bus_pv)(1);
+            if i != j
+                jacobian(offset + i, offset + j) = abs(bus_dat(i, 3))*abs(bus_dat(j, 3))*abs(Y_bus(i, j))*sin(bus_dat(i, 4) - bus_dat(j, 4) - angle(Y_bus(i, j)));	%|Vi|*|Vj|*|Yij|*sin()
+            else
+                jacobian(offset + i, offset + j) = -1*bus_dat(i, 3)*bus_dat(i, 3)*imag(Y_bus(i, i));	%-|v|^2*Bii
+                for k = 1:nbs
+                    jacobian(offset + i, offset + j) += abs(bus_dat(i, 3))*abs(bus_dat(k, 3))*abs(Y_bus(i, k))*sin(bus_dat(i, 4) - bus_dat(k, 4) - angle(Y_bus(i, k)));	%Qi
+                end
+            end
+        end
+    end
+    %Computing Del(P)/Del(V) which is of size (nbs-1)x(nbs-nmc) 
+    for i = 1:size(bus_pq)(1) + size(bus_pv)(1)
+        for j = 1:size(bus_pq)
+            offset = size(bus_pq)(1) + size(bus_pv)(1);
+            if i != j
+                jacobian(i, offset + j) = abs(bus_dat(i, 3))*abs(bus_dat(j, 3))*abs(Y_bus(i, j))*cos(bus_dat(i, 4) - bus_dat(j, 4) - angle(Y_bus(i, j)));	%|Vi|*|Vj|*|Yij|*cos()
+            else
+                jacobian(i, offset + j) = bus_dat(i, 3)*bus_dat(j, 3)*real(Y_bus(i, j));	%|V|^2*Gii
+                for k = 1:nbs
+                    jacobian(i, offset + j) += abs(bus_dat(i, 3))*abs(bus_dat(k, 3))*abs(Y_bus(i, k))*cos(bus_dat(i, 4) - bus_dat(k, 4) - angle(Y_bus(i, k)));	%Pi
+                end
+            end
+        end
+    end
+    %Computing Del(Q)/Del(thetha) which is of size (nbs-nmc)x(nbs-1)
+    for i = 1:size(bus_pq)(1)
+        for j = 1:size(bus_pq)(1) + size(bus_pv)(1)
+            offset = size(bus_pq)(1) + size(bus_pv)(1);
+            if i != j
+                jacobian(offset + i, j) = -1*abs(bus_dat(i, 3))*abs(bus_dat(j, 3))*abs(Y_bus(i, j))*cos(bus_dat(i, 4) - bus_dat(j, 4) - angle(Y_bus(i, j)));	%-1*|Vi|*|Vj|*|Yij|*cos()
+            else
+                jacobian(offset + i, j) = -1*bus_dat(i, 3)*bus_dat(j, 3)*real(Y_bus(i, j));		%-|V|^2*Gii
+                for k = 1:nbs
+                    jacobian(offset + i, j) += abs(bus_dat(i, 3))*abs(bus_dat(k, 3))*abs(Y_bus(i, k))*cos(bus_dat(i, 4) - bus_dat(k, 4) - angle(Y_bus(i, k)));	%Pi
+                end
+            end
+        end
+    end
+    
