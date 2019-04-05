@@ -7,20 +7,20 @@
 % Test Case 2
 6
 2
-[1 101 1 0 0 0 0.55 0.13; 2 101 1 0 0 0 0 0; 3 101 1 0 0 0 0.3 0.18; 4 101 1 0 0 0 0.5 0.05; 5 102 1.03 0 0.75 0 0.3 0.1; 6 103 1.02 0 0 0 0 0]
-[6 2 0.08 0.37 0.28 1; 6 4 0.123 0.518 0.4 1; 5 1 0.723 1.05 0.2 1; 5 3 0.282 0.640 0.3 1; 2 4 0.097 0.407 0.240 1; 2 1 0 0.133 0 1.05; 4 3 0 0.3 0 1.025]
+bus_dat = [1 101 1 0 0 0 0.55 0.13; 2 101 1 0 0 0 0 0; 3 101 1 0 0 0 0.3 0.18; 4 101 1 0 0 0 0.5 0.05; 5 102 1.03 0 0.75 0 0.3 0.1; 6 103 1.02 0 0 0 0 0]
+line_dat = [6 2 0.08 0.37 0.28 1; 6 4 0.123 0.518 0.4 1; 5 1 0.723 1.05 0.2 1; 5 3 0.282 0.640 0.3 1; 2 4 0.097 0.407 0.240 1; 2 1 0 0.133 0 1.05; 4 3 0 0.3 0 1.025]
 
 
 nbs = input("Enter number of buses ");
 nmc = input("Enter number of machines ");
 
-bus_dat = input("Enter bus data");
-for i = 1:nbs
-    bus_dat(i, 4) *= pi/180;
-end
+% bus_dat = input("Enter bus data");
+% for i = 1:nbs
+%     bus_dat(i, 4) *= pi/180;
+% end
 
 
-line_dat = input("Enter line data ");
+% line_dat = input("Enter line data ");
 Y_bus = zeros(nbs, nbs);
 size(Y_bus)
 disp(size(line_dat)(1))
@@ -178,9 +178,54 @@ while 1
     end
 end
 
+disp("The active power at each Node is ")
+active_power = zeros(nbs, 1);
+for i = 1:nbs
+	n = i;
+	for j = 1:size(bus_dat)(1)	%to calculate the Pcal we will have to use the value of accross all nodes/buses
+		m = bus_dat(j, 1);
+		active_power(i) += abs(bus_dat(n, 3))*abs(bus_dat(m, 3))*abs(Y_bus(n, m))*cos(bus_dat(n, 4) - bus_dat(m, 4) - angle(Y_bus(n, m)));
+	end
+end
+disp(active_power)
+
+disp("The reactive power at each node is")
+reactive_power = zeros(nbs, 1);
+for i = 1:nbs
+	n = i;
+	for j = 1:size(bus_dat)(1)	%to calculate the Pcal we will have to use the value of accross all nodes/buses
+		m = bus_dat(j, 1);
+		reactive_power(i) += abs(bus_dat(n, 3))*abs(bus_dat(m, 3))*abs(Y_bus(n, m))*sin(bus_dat(n, 4) - bus_dat(m, 4) - angle(Y_bus(n, m)));
+	end
+end
+disp(reactive_power)
+
+disp("the reactive power generation at PV bus ")
+r_generate = zeros(size(bus_pv), 1);
+for i = 1:size(bus_pv)
+	n = bus_pv(i, 1);
+	r_generate(i) = reactive_power(n)+bus_dat(n,7);
+end
+disp(r_generate)
+
+disp("The power in each line is (3rd column for active power and 4th for reactive power)")
+line_power = zeros(size(line_dat)(1), 4);
+for i = 1:size(line_dat)(1)
+	line_power(i, 1) = line_dat(i,1);
+	line_power(i, 2) = line_dat(i,2);
+	v1 = bus_dat(line_power(i,1),3)*cos(bus_dat(line_power(i,1),4))+ 1j*(bus_dat(line_power(i,1),3)*sin(bus_dat(line_power(i,1),4)));
+	v2 = bus_dat(line_power(i,2),3)*cos(bus_dat(line_power(i,2),4))+ 1j*(bus_dat(line_power(i,2),3)*sin(bus_dat(line_power(i,2),4)));
+	current = v1-v2/(line_dat(i, 3)+ j*line_dat(i,4));
+	line_power(i, 3) = real((v1-v2)*conj(current));
+	line_power(i, 4) = imag((v1-v2)*conj(current));
+end
+disp(line_power)
+% disp(Y_bus)
+
+disp("The bus data finally is (angle is in degree )")
 for i = 1:nbs
     bus_dat(i, 4) *= 180.0/pi;
 end
 
-bus_dat
-disp("The angle is in degree")
+disp(bus_dat)
+
