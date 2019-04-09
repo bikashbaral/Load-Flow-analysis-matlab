@@ -18,7 +18,7 @@ Bus data (variable name ‘bus_dat’):
 | 6       | 103      | 1.02          | 0          | 0           | 0           | 0      | 0      |
 
 
-101:P-Q Bus; \t 102:P-|V| Bus; \t 103:|V|-theta (or slack) Bus
+101:P-Q Bus; 102:P-|V| Bus; \t 103:|V|-theta (or slack) Bus
 
 |From Bus|TO Bus|Resistance r(p.u)|Reactance x(p.u.)|Line Charging B (p.u.)|Tap ratio|
 |---|---|---|---|---|---|
@@ -33,10 +33,10 @@ Bus data (variable name ‘bus_dat’):
 
 <br />
 Step wise code -:
-- First the Ybus is computed using Branch data
-- Iterative Newton raphson method is used to find the solution of V and Thetha
-- Then reactive power and active power injection is calculated at all nodes
-- Reactive power generation at the P-V bus
-- Sending and recieving power at each node is calculated
+-First the Ybus is computed using Branch data 
+-Iterative Newton raphson method is used to find the solution of V and Thetha
+-Then reactive power and active power injection is calculated at all nodes
+-Reactive power generation at the P-V bus
+-Sending and recieving power at each node is calculated
 
 
