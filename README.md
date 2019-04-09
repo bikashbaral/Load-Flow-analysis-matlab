@@ -7,9 +7,9 @@ No of buses (variable name ‘nbs’): 6;<br />
 No of machines (variable name ‘nmc’): 2<br />
 
 Bus data (variable name ‘bus_dat’):<br />
-|Bus no.|Bus type|Voltage(p.u.)|Angle(deg)|Active Power generated| Reactive Power generated|Active Load Power|Reactive Load Power
-|---|---|---|---|---|---|---|---|
-|1|101|1.00|0|0|0|0.55|0.13|
+| Bus no. | Bus type | Voltage(p.u.) | Angle(deg) | Active Power generated | Reactive Power generated | Active Load Power | Reactive Load Power |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 1 | 101 | 1.00 | 0 | 0 | 0 | 0.55 | 0.13 |
 |2|101|1.00|0|0|0|0|0|
 |3|101|1.00|0|0|0|0.30|0.18|
 |4|101|1.00|0|0|0|0.50|0.05|
