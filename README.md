@@ -6,7 +6,8 @@ General Data:
 No of buses (variable name ‘nbs’): 6;<br />
 No of machines (variable name ‘nmc’): 2<br />
 
-Bus data (variable name ‘bus_dat’):<br />
+Bus data (variable name ‘bus_dat’):
+
 | Bus no. | Bus type | Voltage(p.u.) | Angle(deg) | P generated | Q generated | P Load | Q Load |
 | ------- | -------- | ------------- | ---------- | ----------- | ----------- | ------ | ------ |
 | 1       | 101      | 1.00          | 0          | 0           | 0           | 0.55   | 0.13   |
