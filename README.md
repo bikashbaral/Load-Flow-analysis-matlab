@@ -7,14 +7,14 @@ No of buses (variable name ‘nbs’): 6;<br />
 No of machines (variable name ‘nmc’): 2<br />
 
 Bus data (variable name ‘bus_dat’):<br />
-| Bus no. | Bus type | Voltage(p.u.) | Angle(deg) | Active Power generated | Reactive Power generated | Active Load Power | Reactive Load Power |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| 1 | 101 | 1.00 | 0 | 0 | 0 | 0.55 | 0.13 |
-| 2 | 101 | 1.00 | 0 | 0 | 0 | 0 | 0 |
-| 3 | 101 | 1.00 | 0 | 0 | 0 | 0.30 | 0.18 |
-| 4 | 101 | 1.00 | 0 | 0 | 0 | 0.50 | 0.05 |
-| 5 | 102 | 1.03 | 0 | 0.75 | 0 | 0.30 | 0.10 |
-| 6 | 103 | 1.02 | 0 | 0 | 0 | 0 | 0 |
+| Bus no. | Bus type | Voltage(p.u.) | Angle(deg) | P generated | Q generated | P Load | Q Load |
+| ------- | -------- | ------------- | ---------- | ----------- | ----------- | ------ | ------ |
+| 1       | 101      | 1.00          | 0          | 0           | 0           | 0.55   | 0.13   |
+| 2       | 101      | 1.00          | 0          | 0           | 0           | 0      | 0      |
+| 3       | 101      | 1.00          | 0          | 0           | 0           | 0.30   | 0.18   |
+| 4       | 101      | 1.00          | 0          | 0           | 0           | 0.50   | 0.05   |
+| 5       | 102      | 1.03          | 0          | 0.75        | 0           | 0.30   | 0.10   |
+| 6       | 103      | 1.02          | 0          | 0           | 0           | 0      | 0      |
 
 
 101:P-Q Bus; \t 102:P-|V| Bus; \t 103:|V|-theta (or slack) Bus
