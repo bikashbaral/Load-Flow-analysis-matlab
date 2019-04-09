@@ -1,4 +1,5 @@
 # Load-Flow-analysis-matlab
+## Code is in octave
 This repository contains solution of Load Flow analysis using Iterative method(Newton Raphson Method). <br />
 
 Below is the format of data required in input-:<br />
